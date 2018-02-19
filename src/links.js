@@ -2,17 +2,18 @@
 
 var fs = require('fs-extra');
 var path = require('path');
-var homedir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-
-var linksPath = path.join(homedir, '.config/wml', 'links.json');
+var env = process.platform == 'win32' ? 'USERPROFILE' : 'HOME';
+var linksPath = path.join(process.env[env], '.config/wml');
+var linksFile = path.join(linksPath, 'links.json');
 
 module.exports.data = [];
+module.exports.path = linksPath;
 
 module.exports.load = function() {
   var links;
 
   try {
-    links = fs.readJsonSync(linksPath);
+    links = fs.readJsonSync(linksFile);
   } catch (err) {
     links = {};
   }
@@ -21,5 +22,5 @@ module.exports.load = function() {
 };
 
 module.exports.save = function() {
-  fs.outputJsonSync(linksPath, module.exports.data);
+  fs.outputJsonSync(linksFile, module.exports.data);
 };

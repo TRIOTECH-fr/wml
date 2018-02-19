@@ -2,8 +2,6 @@
 
 require('colors');
 
-var path = require('path');
-
 var capabilityCheck = require('../capabilityCheck.js');
 var watchProject = require('../watchProject.js');
 var watchDel = require('../watchDel.js')
@@ -31,11 +29,10 @@ function onLinksChange(onChange, resp) {
 }
 
 function watchForLinkChanges(onChange) {
-	var linksPath = path.resolve(__dirname, '../');
 	return subscribe({
 		client: new watchman.Client(),
-		watch: linksPath,
-		src: linksPath,
+		watch: links.path,
+		src: links.path,
 		handler: onLinksChange.bind(this, onChange)
 	});
 }
@@ -58,7 +55,7 @@ function startWatcher(link, linkId) {
 		client: client
 	}).then(() => {
 
-		console.log('Clean target'.green, link.dest)				
+		console.log('Clean target'.green, link.dest)
 
 		return new Promise((resolve,reject)=>{
 			fs.emptyDir(link.dest);
@@ -67,7 +64,7 @@ function startWatcher(link, linkId) {
 
 	}).then(() => {
 
-		console.log('Deleting old watch'.green, link.src)				
+		console.log('Deleting old watch'.green, link.src)
 
 		return watchDel({
 			client: client,
